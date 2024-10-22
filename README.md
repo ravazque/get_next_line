@@ -24,12 +24,21 @@ static char *buffer;
 
 This ensures that reading continues from where it left off in the previous call, without losing any data.
 
+
+‎ 
+
+ 
 ## Bonus part
 The bonus part of the project adds the following requirements:
 
 - **Multiple file descriptor handling**: The function must handle multiple file descriptors simultaneously, remembering the reading state of each one.
 - **Single static variable**: The logic must be implemented using only one static variable.
 
+
+
+‎ 
+
+ 
 
 ----
 
