@@ -24,12 +24,21 @@ static char *remainder;
 
 Esto asegura que la lectura continúa desde donde se dejó en la llamada anterior, sin pérdida de información.
 
+
+‎ 
+
+ 
+
 ## Parte bonus
 La parte bonus del proyecto añade los siguientes requisitos:
 
 - **Manejo de múltiples file descriptors**: La función debe ser capaz de gestionar varios file descriptors simultáneamente, recordando el estado de lectura de cada uno.
 - **Uso de una sola variable estática**: Toda la lógica debe implementarse usando una única variable estática.
 
+
+‎ 
+
+ 
 
 ----
 
