@@ -19,7 +19,7 @@ La función **get_next_line** lee del file descriptor (fd) pasado como parámetr
 **get_next_line** utiliza una variable estática para conservar el contenido sobrante entre llamadas sucesivas. Por ejemplo, si la lectura de un buffer no alcanza a completar una línea, lo que sobra se guarda en esta variable estática para procesarse en la siguiente llamada.
 
 ```c
-static char *remainder;
+static char *buffer;
 ```
 
 Esto asegura que la lectura continúa desde donde se dejó en la llamada anterior, sin pérdida de información.
