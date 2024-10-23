@@ -3,7 +3,7 @@
 El proyecto **get_next_line** consiste en la creación de una función que lee y devuelve una línea desde un file descriptor. El objetivo principal es manejar operaciones de lectura de archivos de manera eficiente y gestionar buffers de tamaño variable en C.
 
 ‎ 
-
+ 
 
 ## Funcionalidad
 
