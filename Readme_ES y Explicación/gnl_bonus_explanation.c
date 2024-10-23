@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"                                    // librería con funciones como strlen, strjoin, etc...
+#include "get_next_line.h"                                    // librería con las funciones auxiliares (utils): ft_strlen, ft_strjoin y ft_strchr
 
-static char *extract_line(char *buffer)
+static char *ext_line(char *buffer)
 {
     char    *line;                                             // línea nueva para guardar la que hemos de devolver del buffer al GNL
     size_t  i;                                                 // contador del buffer
@@ -74,14 +74,13 @@ static char *upd_buffer(char *buffer)
     {
         return (NULL);
     }
+	
     i++;                                                       // avanzamos una posición con i [buffer]
-    
     j = 0;                                                     // inicializamos j
     
-    while (buffer[i])                                          // mientras tengamos texto en el buffer copiamos este en el nuevo buffer
+    while (buffer[i])                                          // mientras tengamos texto en el buffer copiamos este en el nuevo buffer (new_buffer)
     {
-        new_buffer[j] = buffer[i++];
-        j++;
+        new_buffer[j++] = buffer[i++];
     }
     new_buffer[j] = '\0';                                      // ponemos el carácter final a la cadena de caracteres nueva
     free (buffer);                                             // liberamos el buffer original
@@ -137,7 +136,7 @@ char    *get_next_line(int fd)
         return (NULL);
     }
     
-    line = extract_line(buffer[fd]);                           // mandamos el buffer con el contenido para que me extraiga los primeros caracteres hasta encontrar un '\n'
+    line = ext_line(buffer[fd]);                               // mandamos el buffer con el contenido para que me extraiga los primeros caracteres hasta encontrar un '\n'
     
     buffer[fd] = upd_buffer(buffer[fd]);                       // mandamos el buffer a la función para quitar toda la línea que ya se ha guardado en line
     
@@ -165,10 +164,10 @@ char    *get_next_line(int fd)
 // 		return(write(1, "FD no válido\n", 15), 1);
 
 // 	while ((line = get_next_line(fd)) != NULL)
-	// {
-	// 	printf("%s", line);
-	// 	free (line);
-	// }
+//	{
+//		printf("%s", line);
+//		free (line);
+//	}
 
 // 	return (close (fd), 0);
 // }
