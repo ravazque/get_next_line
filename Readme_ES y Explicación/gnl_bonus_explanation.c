@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"                                     // librería con las funciones auxiliares (utils): ft_strlen, ft_strjoin y ft_strchr
+#include "get_next_line_bonus.h"                               // librería con las funciones auxiliares (utils): ft_strlen, ft_strjoin y ft_strchr
 
 static char *ext_line(char *buffer)
 {
