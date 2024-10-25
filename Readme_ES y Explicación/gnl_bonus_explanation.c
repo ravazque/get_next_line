@@ -11,12 +11,15 @@ static char	*extract_line(char *buffer)
 		return (NULL);
 	
 	while (buffer[i] && buffer[i] != '\n')                                                      // mientras el buffer tenga caracteres y no haya salto de línea
+	{
 		i++;                                                                                    // avanzamos i para contar el tamaño de la línea hasta el salto
+	}
 	
 	if (buffer[i] == '\n')                                                                      // si hay un salto de línea, reservamos espacio extra para el salto
 		line = (char *)malloc(i + 2);                                                           // malloc i+2: la línea y el salto de línea
 	else                                                                                        // si no hay salto, reservamos espacio solo para la línea
 		line = (char *)malloc(i + 1);                                                           // malloc i: la línea final
+	
 	if (!line)                                                                                  // si falla el malloc, devolvemos NULL
 		return (NULL);
 	
@@ -103,6 +106,7 @@ static char	*read_until_newline(int fd, char **buff)
 		}
 		
 		tmp_buffer[bytes_read] = '\0';                                                          // añadimos el carácter nulo al final de los datos leídos en tmp_buffer
+		
 		*buff = ft_strjoin(*buff, tmp_buffer);                                                  // concatenamos el buffer temporal al buffer principal
 		if (!*buff)                                                                             // si falla la concatenación, liberamos el buffer temporal y devolvemos NULL
 		{
@@ -117,7 +121,7 @@ static char	*read_until_newline(int fd, char **buff)
 
 char	*get_next_line(int fd)
 {
-	static char	*buff[MAX_FD];                                                                  // buffer estático para mantener el contenido entre llamadas a la función
+	static char	*buff[MAX_FD];                                                                   // buffer estático para mantener el contenido entre llamadas a la función
 	char		*line;                                                                           // línea a devolver
 	ssize_t		flag;                                                                            // indicador de error para actualizar el buffer
 
@@ -131,7 +135,7 @@ char	*get_next_line(int fd)
 	if (!read_until_newline(fd, &buff[fd]) || (buff[fd] && *buff[fd] == '\0'))                   // llamamos a si read_until_newline para guardar en buffer todo el texto del fd
 	{
 		free(buff[fd]);                                                                         // liberamos el buffer correspondiente a fd si devuelve NULL o el buffer está vacío
-		buff[fd] = NULL;                                                                        // asignamos NULL al buffer para evitar si devuelve NULL o el buffer está vacío
+		buff[fd] = NULL;                                                                        // asignamos NULL al buffer si devuelve NULL o el buffer está vacío
 		return (NULL);
 	}
 	
