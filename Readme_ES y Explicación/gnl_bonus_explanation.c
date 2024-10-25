@@ -128,10 +128,10 @@ char	*get_next_line(int fd)
 		return (NULL);
 	}
 	
-	if (!read_until_newline(fd, &buff[fd]) || (buff[fd] && *buff[fd] == '\0'))                   // si read_until_newline devuelve NULL o el buffer está vacío
+	if (!read_until_newline(fd, &buff[fd]) || (buff[fd] && *buff[fd] == '\0'))                   // llamamos a si read_until_newline para guardar en buffer todo el texto del fd
 	{
-		free(buff[fd]);                                                                         // liberamos el buffer correspondiente a fd
-		buff[fd] = NULL;                                                                        // asignamos NULL al buffer para evitar fugas de memoria
+		free(buff[fd]);                                                                         // liberamos el buffer correspondiente a fd si devuelve NULL o el buffer está vacío
+		buff[fd] = NULL;                                                                        // asignamos NULL al buffer para evitar si devuelve NULL o el buffer está vacío
 		return (NULL);
 	}
 	
