@@ -6,13 +6,14 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 16:28:50 by ravazque          #+#    #+#             */
-/*   Updated: 2024/10/22 18:26:06 by ravazque         ###   ########.fr       */
+/*   Updated: 2024/10/25 13:57:12 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_BONUS_H
 # define GET_NEXT_LINE_BONUS_H
 
+# include <limits.h>
 # include <stdlib.h>
 # include <unistd.h>
 
@@ -20,7 +21,7 @@
 #  define BUFFER_SIZE 10
 # endif
 
-# define MAX_FD 1024
+# define MAX_FD __FD_SETSIZE
 
 size_t	ft_strlen(const char *str);
 char	*ft_strchr(const char *s, int c);
