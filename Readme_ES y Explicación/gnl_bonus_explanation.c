@@ -1,173 +1,198 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   gnl_bonus_explanatios.c                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/23 13:19:48 by ravazque          #+#    #+#             */
-/*   Updated: 2024/10/23 22:42:56 by ravazque         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
-#include "get_next_line_bonus.h"                               // librería con las funciones auxiliares (utils): ft_strlen, ft_strjoin y ft_strchr
+#include "get_next_line_bonus.h"                                                                // archivo de cabecera con funciones auxiliares: ft_strlen, ft_strjoin y ft_strchr
 
-static char *ext_line(char *buffer)
+static char	*extract_line(char *buffer)
 {
-    char    *line;                                             // línea nueva para guardar la que hemos de devolver del buffer al GNL
-    size_t  i;                                                 // contador del buffer
+	char	*line;                                                                              // línea a devolver al llamar a get_next_line
+	size_t	i;                                                                                  // índice para recorrer el buffer
 
-    i = 0;
-    if (!buffer[i])                                            // si no hay buffer devuelvo NULL
-    {
-        return (NULL);
-    }
-    while (buffer[i] && buffer[i] != '\n')                     // avanzamos para calcular el tamaño de la línea a devolver
-    {
-        i++;
-    }
-    if (buffer[i] == '\n')                                     // comprobación para reservar en función del contenido
-    {
-        line = (char *)malloc(i + 2);                          // si había salto de línea reservo para el mismo y el carácter del final
-    }
-    else
-    {
-        line = (char *)malloc(i + 1);                          // si no había salto de línea reservo solo para el carácter final
-    }
-    if (!line)                                                 // control de error en la reserva de memoria
-    {
-        return (NULL);
-    }
-    i = 0;
-    while (buffer[i] && buffer[i] != '\n')                     // mientras no sea el final del texto o la línea copiamos la línea del buffer
-    {
-        line[i] = buffer[i];
-        i++;
-    }
-    if (buffer[i] == '\n')                                     // si no había acabado el texto y hay un salto de línea lo ponemos en la línea y avanzamos
-    {
-        line[i] = '\n';
-        i++;
-    }
-    line[i] = '\0';                                            // ponemos el carácter final a la línea guardada
-    return (line);                                             // devolvemos la línea que tendrá que ser devuelta en la función GNL
-}
-
-static char *upd_buffer(char *buffer)
-{
-    char    *new_buffer;                                       // nuevo buffer para devolver y almacenar en la función GNL todo el texto sin la línea que será devuelta
-    size_t  i;                                                 // contador del buffer
-    size_t  j;                                                 // contador del new_buffer
-
-    i = 0;
-    while (buffer[i] && buffer[i] != '\n')                     // calculamos los caracteres hasta el primer salto de línea ('\n')
-    {
-        i++;
-    }
-    if (!buffer[i])                                            // si hay errores con el buffer liberamos el mismo y devolvemos null
-    {
-        free (buffer);
-        return (NULL);
-    }
-    new_buffer = (char *)malloc(ft_strlen(buffer) - i);        // reservamos con malloc el tamaño del buffer menos la línea que va a ser devuelta y retirada
-    if (!new_buffer)                                           // si falla la reserva de memoria devolvemos NULL
-    {
-        return (NULL);
-    }
+	i = 0;
+	if (!buffer || !buffer[i])                                                                  // si el buffer está vacío o no tiene contenido, devolvemos NULL
+		return (NULL);
 	
-    i++;                                                       // avanzamos una posición con i [buffer]
-    j = 0;                                                     // inicializamos j
-    
-    while (buffer[i])                                          // mientras tengamos texto en el buffer copiamos este en el nuevo buffer (new_buffer)
-    {
-        new_buffer[j++] = buffer[i++];
-    }
-    new_buffer[j] = '\0';                                      // ponemos el carácter final a la cadena de caracteres nueva
-    free (buffer);                                             // liberamos el buffer original
-    return (new_buffer);                                       // devolvemos el nuevo buffer
+	while (buffer[i] && buffer[i] != '\n')                                                      // mientras el buffer tenga caracteres y no haya salto de línea
+		i++;                                                                                    // avanzamos i para contar el tamaño de la línea hasta el salto
+	
+	if (buffer[i] == '\n')                                                                      // si hay un salto de línea, reservamos espacio extra para el salto
+		line = (char *)malloc(i + 2);                                                           // malloc i+2: la línea y el salto de línea
+	else                                                                                        // si no hay salto, reservamos espacio solo para la línea
+		line = (char *)malloc(i + 1);                                                           // malloc i: la línea final
+	if (!line)                                                                                  // si falla el malloc, devolvemos NULL
+		return (NULL);
+	
+	i = 0;                                                                                      // reiniciamos i a 0
+	while (buffer[i] && buffer[i] != '\n')                                                      // mientras el buffer tenga caracteres y no haya salto de línea
+	{
+		line[i] = buffer[i];                                                                    // copiamos cada carácter del buffer a la línea
+		i++;                                                                                    // avanzamos i para continuar copiando caracteres
+	}
+	
+	if (buffer[i] == '\n')                                                                      // si encontramos un salto de línea en el buffer
+	{
+		line[i] = '\n';                                                                         // añadimos el salto de línea a la línea copiada
+		i++;                                                                                    // avanzamos i después de añadir el salto de línea
+	}
+	
+	line[i] = '\0';                                                                             // añadimos el carácter nulo al final de la línea
+	return (line);                                                                              // devolvemos la línea creada
 }
 
-char    *get_next_line(int fd)
+static char	*update_buffer(char *buffer, ssize_t *flag)
 {
-    static char *buffer[FD_MAX];                               // buffer estático de file descriptors para tener el contenido sin cambios
-    char        *tem_buffer;                                   // buffer temporal para guardar el contenido que leamos
-    char        *line;                                         // línea que va a ser devuelta con el contenido
+	char	*new_buffer;                                                                         // nuevo buffer con el contenido restante después de extraer la línea
+	size_t	i;                                                                                   // índice para recorrer el buffer original
+	size_t	j;                                                                                   // índice para el nuevo buffer
 
-    ssize_t     bytes_read;                                    // cantidad de "texto" (bytes) que se leen, si es = 0 significa que ha acabado el programa
-    
-    if (fd < 0 || BUFFER_SIZE <= 0 || fd >= FD_MAX)            // control de errores si hay demasiados fd, si el fd no es válido o no hay lectura
-    {
-        return (NULL);
-    }
-    tem_buffer = (char *)malloc(BUFFER_SIZE + 1);              // reserva de memoria dinámica del tamaño del BUFFER de lectura
-    if (!tem_buffer)                                           // control de errores en el malloc
-    {
-        return (NULL);
-    }
-    bytes_read = 1;                                            // inicializamos el valor de los bytes leídos
-    
-    while(!ft_strchr(buffer[fd], '\n') && bytes_read > 0)      // si no hay saltos de líneas y la cantidad de contenido leído es mayor que 0 entonces ->
-    {
-        bytes_read = read(fd, tem_buffer, BUFFER_SIZE);        // guardamos en bytes_read la cantidad de bytes leídos del fd, estos son tantos como marca
-                                                               // el BUFFER_SIZE y se guarda en el buffer temporal (tem_buffer)
-                                                                
-        if (bytes_read < 0)                                    // si leemos menos de 0 bytes (error), liberamos toda la memoria reservada y devolvemos NULL
-        {
-            free (tem_buffer);
-            buffer[fd] = NULL;
-            return (NULL);
-        }
-        tem_buffer[bytes_read] = '\0';                         // el texto que se ha guardado en el "tem_buffer" durante read se marca con \0 para indicar el final
-        
-        buffer[fd] = ft_strjoin(buffer[fd], tem_buffer);       // concatenamos en mi buffer estático, con su correspondiente fd, el contenido del buffer temporal
-        if (!buffer[fd])
-        {
-            free (tem_buffer);
-            return (NULL);
-        }
-    }
-
-    free (tem_buffer);                                         // liberamos el buffer temporal ya que ya tengo el contenido del fd guardado en "buffer[fd]"
-    
-    if (!buffer[fd] || *buffer[fd] == '\0')                    // si no ha leído contenido o hay un error libera el buffer del texto almacenado, igualalo a NULL y devuelve NULL
-    {
-        free (buffer[fd]);
-        buffer[fd] = NULL;
-        return (NULL);
-    }
-    
-    line = ext_line(buffer[fd]);                               // mandamos el buffer con el contenido para que me extraiga los primeros caracteres hasta encontrar un '\n'
-    
-    buffer[fd] = upd_buffer(buffer[fd]);                       // mandamos el buffer a la función para quitar toda la línea que ya se ha guardado en line
-    
-    return(line);                                              // devolvemos la línea correspondiente
+	i = 0;
+	while (buffer[i] && buffer[i] != '\n')                                                      // mientras el buffer tenga caracteres y no haya salto de línea
+		i++;                                                                                    // avanzamos i hasta encontrar el salto o el final del buffer
+	
+	if (!buffer[i])                                                                             // si no hay salto de línea (fin del buffer), liberamos y devolvemos NULL
+	{
+		free(buffer);                                                                           // liberamos el buffer original
+		*flag = 0;                                                                              // marcamos el flag como 0 (sin error)
+		return (NULL);
+	}
+	
+	new_buffer = (char *)malloc(ft_strlen(buffer) - i);                                         // reservamos espacio para el buffer restante sin la línea extraída
+	if (!new_buffer)                                                                            // si falla el malloc, liberamos el buffer original y devolvemos NULL
+	{
+		free(buffer);                                                                           // liberamos el buffer original
+		*flag = 1;                                                                              // marcamos el flag como 1 (error)
+		return (NULL);
+	}
+	
+	i++;                                                                                        // avanzamos i para empezar desde el siguiente carácter después del salto
+	j = 0;                                                                                      // inicializamos j en 0
+	
+	while (buffer[i])                                                                           // mientras queden caracteres en el buffer original
+		new_buffer[j++] = buffer[i++];                                                          // copiamos cada carácter restante al nuevo buffer
+	
+	new_buffer[j] = '\0';                                                                       // añadimos el carácter nulo al final del nuevo buffer
+	free(buffer);                                                                               // liberamos el buffer original
+	*flag = 0;                                                                                  // marcamos el flag como 0 (sin error)
+	return (new_buffer);                                                                        // devolvemos el nuevo buffer actualizado
 }
 
+static char	*read_until_newline(int fd, char **buff)
+{
+	char	*tmp_buffer;                                                                         // buffer temporal para almacenar los datos leídos del fd
+	ssize_t	bytes_read;                                                                          // cantidad de bytes leídos del fd
 
-// -------------- main -----------------
+	tmp_buffer = (char *)malloc(BUFFER_SIZE + 1);                                               // reservamos espacio para el buffer temporal
+	
+	if (!tmp_buffer)                                                                            // si falla el malloc, liberamos el buffer principal y devolvemos NULL
+	{
+		free(*buff);                                                                            // liberamos el buffer principal
+		*buff = NULL;                                                                           // asignamos NULL al buffer principal
+		return (NULL);
+	}
+	
+	bytes_read = 1;
+	
+	while (!ft_strchr(*buff, '\n') && bytes_read > 0)                                           // mientras no se encuentre un salto de línea en buff y bytes leídos > 0
+	{
+		bytes_read = read(fd, tmp_buffer, BUFFER_SIZE);                                         // leemos datos del fd al buffer temporal
+		
+		if (bytes_read < 0)                                                                     // si hay un error en la lectura, liberamos los buffers y devolvemos NULL
+		{
+			free(tmp_buffer);                                                                   // liberamos el buffer temporal
+			free(*buff);                                                                        // liberamos el buffer principal
+			*buff = NULL;                                                                       // asignamos NULL al buffer principal
+			return (NULL);
+		}
+		
+		tmp_buffer[bytes_read] = '\0';                                                          // añadimos el carácter nulo al final de los datos leídos en tmp_buffer
+		*buff = ft_strjoin(*buff, tmp_buffer);                                                  // concatenamos el buffer temporal al buffer principal
+		if (!*buff)                                                                             // si falla la concatenación, liberamos el buffer temporal y devolvemos NULL
+		{
+			free(tmp_buffer);                                                                   // liberamos el buffer temporal
+			return (NULL);
+		}
+	}
+	
+	free(tmp_buffer);                                                                           // liberamos el buffer temporal ya que los datos están en el buffer principal
+	return (*buff);                                                                             // devolvemos el buffer principal actualizado
+}
 
-// #include <fcntl.h>
+char	*get_next_line(int fd)
+{
+	static char	*buff[MAX_FD];                                                                  // buffer estático para mantener el contenido entre llamadas a la función
+	char		*line;                                                                           // línea a devolver
+	ssize_t		flag;                                                                            // indicador de error para actualizar el buffer
+
+	if (fd < 0 || fd >= MAX_FD || BUFFER_SIZE <= 0)                                              // comprobamos si el fd es válido y si BUFFER_SIZE es mayor a 0
+	{
+		free(buff[fd]);                                                                         // si no es válido, liberamos el buffer correspondiente a fd
+		buff[fd] = NULL;                                                                        // asignamos NULL al buffer para evitar fugas de memoria
+		return (NULL);
+	}
+	
+	if (!read_until_newline(fd, &buff[fd]) || (buff[fd] && *buff[fd] == '\0'))                   // si read_until_newline devuelve NULL o el buffer está vacío
+	{
+		free(buff[fd]);                                                                         // liberamos el buffer correspondiente a fd
+		buff[fd] = NULL;                                                                        // asignamos NULL al buffer para evitar fugas de memoria
+		return (NULL);
+	}
+	
+	line = extract_line(buff[fd]);                                                               // extraemos la primera línea del buffer
+	
+	if (!line)                                                                                   // si no hay línea para extraer, liberamos el buffer y devolvemos NULL
+	{
+		free(buff[fd]);                                                                         // liberamos el buffer correspondiente a fd
+		buff[fd] = NULL;                                                                        // asignamos NULL al buffer para evitar fugas de memoria
+		return (NULL);
+	}
+	
+	buff[fd] = update_buffer(buff[fd], &flag);                                                   // actualizamos el buffer para eliminar la línea extraída
+	
+	if (!buff[fd] && flag == 1)                                                                  // si ocurre un error al actualizar el buffer (flag = 1)
+	{
+		free(line);                                                                             // liberamos la línea
+		return (NULL);
+	}
+	
+	return (line);                                                                               // devolvemos la línea extraída
+}
+
+// --------------- main ------------------
+
 // #include <stdio.h>
-// #include <unistd.h>
+// #include <fcntl.h>
 
-// int	main(int	argc, char	*argv[])
+// int main(int argc, char **argv)
 // {
-// 	int		fd;
-// 	char	*line;
-			
-// 	if(argc != 2)
-// 		return(write(1, "Error al pasar el FD\n", 22), 0);
+//     int i = 0;
+//     int finished = 0;
+//     int fds[argc - 1];
 
-// 	fd = open(argv[1], O_RDONLY);
-	
-// 	if (fd < 0)
-// 		return(write(1, "FD no válido\n", 15), 1);
-
-// 	while ((line = get_next_line(fd)) != NULL)
-//	{
-//		printf("%s", line);
-//		free (line);
-//	}
-
-// 	return (close (fd), 0);
+//     while (++i < argc)
+//         fds[i - 1] = open(argv[i], O_RDONLY);
+//     while (!finished)
+//     {
+//         finished = 1;
+//         i = 0;
+//         while (i < argc - 1)
+//         {
+//             if (fds[i] != -1)
+//             {
+//                 char *line = get_next_line(fds[i]);
+//                 if (line)
+//                 {
+//                     printf("FD %d: %s", fds[i], line);
+//                     free(line);
+//                     finished = 0;
+//                 }
+//             }
+//             i++;
+//         }
+//     }
+//     i = 0;
+//     while (i < argc - 1)
+//     {
+//         if (fds[i] != -1)
+//             close(fds[i]);
+//         i++;
+//     }
+//     return (0);
 // }
