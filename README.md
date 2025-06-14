@@ -1,21 +1,9 @@
-# Get Next Line
 
 <div align="center">
   <img src="https://github.com/ayogun/42-project-badges/raw/main/badges/get_next_linem.png" alt="Get Next Line Badge" width="150" height="150">
 </div>
 
-## 📋 Table of Contents
-
-- [Overview](#overview)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Implementation Details](#implementation-details)
-- [Buffer Management](#buffer-management)
-- [Testing](#testing)
-- [Bonus Features](#bonus-features)
-
-## 🎯 Overview
+## 📖 About
 
 **Get Next Line** is a 42 School project that implements a function to read lines from file descriptors one at a time. This function is essential for handling large files efficiently without loading the entire content into memory.
 
