@@ -87,6 +87,9 @@ cc -Wall -Wextra -Werror -D BUFFER_SIZE=42 get_next_line_bonus.c get_next_line_u
 
 ```
 get_next_line/
+├──┬ doc/
+│  ├── gnl_explanation              # Header file with prototypes and definitions
+│  └── gnl_bonus_explanation        # ader file
 ├──┬ include/
 │  ├── get_next_line.h              # Header file with prototypes and definitions
 │  └── get_next_line_bonus.h        # Bonus header file

@@ -1,5 +1,5 @@
 
-#include "../include/get_next_line_bonus.h"                                                                // archivo de cabecera con funciones auxiliares: ft_strlen, ft_strjoin y ft_strchr
+#include "../include/get_next_line_bonus.h"                                                     // archivo de cabecera con funciones auxiliares: ft_strlen, ft_strjoin y ft_strchr
 
 static char	*extract_line(char *buffer)
 {
