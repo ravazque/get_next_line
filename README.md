@@ -1,7 +1,5 @@
 
-<p align="center">
-  <img src="https://github.com/ayogun/42-project-badges/raw/main/badges/get_next_linem.png" alt="Get Next Line Badge" width="150" height="150">
-</p>
+# get next line
 
 ## 📖 About
 
@@ -118,7 +116,7 @@ The Get Next Line project teaches fundamental concepts essential for systems pro
 
 ## ⚙️ Technical Specifications
 
-- **Language**: C (C99 standard)
+- **Language**: C (C90 standard)
 - **Compiler**: cc with flags `-Wall -Wextra -Werror`
 - **Buffer Size**: Configurable via `BUFFER_SIZE` macro during compilation
 - **Memory Management**: Dynamic allocation with proper cleanup
