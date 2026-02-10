@@ -85,7 +85,7 @@ cc -Wall -Wextra -Werror -D BUFFER_SIZE=42 get_next_line_bonus.c get_next_line_u
 
 ```
 get_next_line/
-├──┬ doc/
+├──┬ docs/
 │  ├── gnl_explanation              # Explanation of the “get next line” project
 │  └── gnl_bonus_explanation        # Explanation of the “get next line” project with bonus
 ├──┬ include/
